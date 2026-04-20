@@ -10,11 +10,11 @@
     "dev:frontend": "npm run dev --workspace=apps/frontend",
     "dev:backend": "npm run start:dev --workspace=apps/backend",
     "dev": "concurrently \"npm run dev:frontend\" \"npm run dev:backend\"",
-    "build": "cd apps/backend && npx prisma generate && npx nest build",
+    "build": "npm run build:backend",
     "build:all": "npm run build --workspaces",
     "build:frontend": "npm run build --workspace=apps/frontend",
     "build:backend": "cd apps/backend && npx prisma generate && npx nest build",
-    "start": "cd apps/backend && node dist/src/main.js",
+    "start": "node apps/backend/dist/src/main.js",
     "lint": "npm run lint --workspaces"
   },
   "devDependencies": {
