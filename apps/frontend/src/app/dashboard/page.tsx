@@ -4,10 +4,14 @@ const API = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3002";
 
 async function getData() {
   try {
+    const controller = new AbortController();
+    const timeout = setTimeout(() => controller.abort(), 5000);
+    const opts = { cache: "no-store" as const, signal: controller.signal };
     const [products, lowStock] = await Promise.all([
-      fetch(`${API}/api/products`, { cache: "no-store" }).then((r) => r.json()),
-      fetch(`${API}/api/products/low-stock`, { cache: "no-store" }).then((r) => r.json()),
+      fetch(`${API}/api/products`, opts).then((r) => r.json()),
+      fetch(`${API}/api/products/low-stock`, opts).then((r) => r.json()),
     ]);
+    clearTimeout(timeout);
     return { productCount: products.length, lowStockCount: lowStock.length };
   } catch {
     return { productCount: 0, lowStockCount: 0 };
