@@ -10,16 +10,23 @@ import { UserController } from './presentation/controllers/user.controller';
 
 const imports: any[] = [PrismaModule];
 
-if (process.env.REDIS_HOST) {
+function getRedisConfig() {
+  if (process.env.REDIS_URL) {
+    const url = new URL(process.env.REDIS_URL);
+    return { host: url.hostname, port: parseInt(url.port || '6379'), password: url.password || undefined };
+  }
+  if (process.env.REDIS_HOST?.includes('.')) {
+    return { host: process.env.REDIS_HOST, port: parseInt(process.env.REDIS_PORT || '6379') };
+  }
+  return null;
+}
+
+const redisConfig = getRedisConfig();
+if (redisConfig) {
   const { BullModule } = require('@nestjs/bullmq');
   const { QueueModule } = require('./infrastructure/services/queue.module');
   imports.push(
-    BullModule.forRoot({
-      connection: {
-        host: process.env.REDIS_HOST,
-        port: parseInt(process.env.REDIS_PORT || '6379'),
-      },
-    }),
+    BullModule.forRoot({ connection: redisConfig }),
     QueueModule,
   );
 }
