@@ -1,0 +1,12 @@
+services:
+  - type: web
+    name: rush-api
+    runtime: node
+    region: oregon
+    buildCommand: npm install && cd apps/backend && npx prisma generate && npx nest build
+    startCommand: cd apps/backend && node dist/src/main.js
+    envVars:
+      - key: NODE_VERSION
+        value: 20
+      - key: PORT
+        value: 10000
