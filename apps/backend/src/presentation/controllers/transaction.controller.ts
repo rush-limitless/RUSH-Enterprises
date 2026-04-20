@@ -1,6 +1,13 @@
-import { Controller, Get, Post, Patch, Param, Body } from "@nestjs/common";
+import { Controller, Get, Post, Patch, Param, Body, BadRequestException } from "@nestjs/common";
 import { PrismaService } from "../../prisma/prisma.service";
-import { CreateTransactionDto } from "../dto/caisse.dto";
+
+class CreateTransactionDto {
+  caisseId: string;
+  amount: number;
+  type: string;
+  description: string;
+  productId?: string;
+}
 
 @Controller("transactions")
 export class TransactionController {
@@ -8,8 +15,29 @@ export class TransactionController {
 
   @Post()
   async create(@Body() dto: CreateTransactionDto) {
-    const tx = await this.prisma.transaction.create({ data: dto });
-    // Update theoretical balance
+    if (dto.productId && dto.type === "SALE") {
+      const product = await this.prisma.product.findUnique({ where: { id: dto.productId } });
+      if (product && product.type === "PHYSICAL") {
+        if (product.stock !== null && product.stock <= 0) {
+          throw new BadRequestException("Stock épuisé");
+        }
+        if (product.stock !== null) {
+          await this.prisma.product.update({
+            where: { id: dto.productId },
+            data: { stock: { decrement: 1 } },
+          });
+        }
+      }
+    }
+
+    const tx = await this.prisma.transaction.create({
+      data: {
+        caisseId: dto.caisseId,
+        amount: dto.amount,
+        type: dto.type,
+        description: dto.description,
+      },
+    });
     const delta = dto.type === "SALE" ? dto.amount : -dto.amount;
     await this.prisma.caisseSession.update({
       where: { id: dto.caisseId },

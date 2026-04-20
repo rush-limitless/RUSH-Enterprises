@@ -6,6 +6,8 @@ import { PrismaModule } from './prisma/prisma.module';
 import { ProductController } from './presentation/controllers/product.controller';
 import { CaisseController } from './presentation/controllers/caisse.controller';
 import { TransactionController } from './presentation/controllers/transaction.controller';
+import { TaskController } from './presentation/controllers/task.controller';
+import { UserController } from './presentation/controllers/user.controller';
 import { QueueModule } from './infrastructure/services/queue.module';
 
 @Module({
@@ -19,7 +21,7 @@ import { QueueModule } from './infrastructure/services/queue.module';
     }),
     QueueModule,
   ],
-  controllers: [AppController, ProductController, CaisseController, TransactionController],
+  controllers: [AppController, ProductController, CaisseController, TransactionController, TaskController, UserController],
   providers: [AppService],
 })
 export class AppModule {}
