@@ -17,9 +17,11 @@
     "start": "node apps/backend/dist/src/main.js",
     "lint": "npm run lint --workspaces"
   },
+  "dependencies": {
+    "next": "16.2.4"
+  },
   "devDependencies": {
     "concurrently": "^8.2.2",
-    "next": "16.2.4",
     "typescript": "^5.4.0"
   }
 }
