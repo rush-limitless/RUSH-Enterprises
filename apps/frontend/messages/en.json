@@ -1,0 +1,13 @@
+{
+  "common": {
+    "appName": "RUSH Enterprises",
+    "currency": "FCFA",
+    "login": "Login",
+    "logout": "Logout",
+    "dashboard": "Dashboard",
+    "products": "Products",
+    "caisse": "Cash Register",
+    "tasks": "Tasks",
+    "reports": "Reports"
+  }
+}

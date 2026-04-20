@@ -1,0 +1,13 @@
+{
+  "common": {
+    "appName": "RUSH Enterprises",
+    "currency": "FCFA",
+    "login": "Connexion",
+    "logout": "Déconnexion",
+    "dashboard": "Tableau de bord",
+    "products": "Produits",
+    "caisse": "Caisse",
+    "tasks": "Tâches",
+    "reports": "Rapports"
+  }
+}

@@ -1,0 +1,71 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+enum Role {
+  ADMIN
+  MANAGER
+}
+
+enum ProductType {
+  DIGITAL
+  PHYSICAL
+}
+
+model User {
+  id       String          @id @default(cuid())
+  email    String          @unique
+  name     String
+  role     Role            @default(MANAGER)
+  sessions CaisseSession[]
+}
+
+model Product {
+  id         String      @id @default(cuid())
+  name       String
+  category   String
+  type       ProductType
+  price      Float
+  stock      Int?
+  alertLimit Int         @default(2)
+  createdAt  DateTime    @default(now())
+  updatedAt  DateTime    @updatedAt
+}
+
+model CaisseSession {
+  id             String        @id @default(cuid())
+  managerId      String
+  manager        User          @relation(fields: [managerId], references: [id])
+  openedAt       DateTime      @default(now())
+  closedAt       DateTime?
+  openingBalance Float         @default(0)
+  theoreticalBal Float         @default(0)
+  realBalance    Float?
+  transactions   Transaction[]
+}
+
+model Transaction {
+  id          String        @id @default(cuid())
+  caisseId    String
+  caisse      CaisseSession @relation(fields: [caisseId], references: [id])
+  amount      Float
+  type        String
+  description String
+  isCancelled Boolean       @default(false)
+  createdAt   DateTime      @default(now())
+}
+
+model Task {
+  id          String   @id @default(cuid())
+  title       String
+  description String
+  dueDate     DateTime
+  isCompleted Boolean  @default(false)
+  remindAt    DateTime?
+  managerId   String?
+  createdAt   DateTime @default(now())
+}
